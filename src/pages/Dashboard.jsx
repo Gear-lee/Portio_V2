@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import Navbar from '../components/Navbar'
+import Header from '../components/Header'
 
 function Dashboard() {
   const [loading, setLoading] = useState(true)
@@ -39,15 +40,18 @@ function Dashboard() {
   }
 
   return (
-    <div className="bg-[#0b071e] text-white min-h-screen p-6 pb-24">
-      <h1 className="text-3xl font-black mb-6">Dashboard</h1>
+    <div className="bg-[#0b071e] text-white min-h-screen pb-24">
+      <Header />
+      <div className="px-6">
+        <h1 className="text-3xl font-black mb-6">Dashboard</h1>
 
-      <div
-        className={`bg-black/40 border border-white/10 p-6 rounded-3xl transition-opacity duration-500 ${
-          showWelcome ? 'opacity-100' : 'opacity-0 h-0 p-0 border-0 overflow-hidden'
-        }`}
-      >
-        <p>Welcome back, {userEmail}!</p>
+        <div
+          className={`bg-black/40 border border-white/10 p-6 rounded-3xl transition-opacity duration-500 ${
+            showWelcome ? 'opacity-100' : 'opacity-0 h-0 p-0 border-0 overflow-hidden'
+          }`}
+        >
+          <p>Welcome back, {userEmail}!</p>
+        </div>
       </div>
 
       <Navbar />

@@ -6,6 +6,9 @@ import Profile from './pages/Profile'
 import FollowList from './pages/FollowList'
 import Settings from './pages/Settings'
 import Notifications from './pages/Notifications'
+import Create from './pages/Create'
+import Projects from './pages/Projects'
+import ProjectDashboard from './pages/ProjectDashboard'
 
 function App() {
   return (
@@ -19,6 +22,9 @@ function App() {
         <Route path="/followers" element={<FollowList mode="followers" />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/notifications" element={<Notifications />} />
+        <Route path="/create" element={<Create />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/project/:projectId" element={<ProjectDashboard />} />
       </Routes>
     </BrowserRouter>
   )

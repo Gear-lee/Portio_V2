@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import Navbar from '../components/Navbar'
+import Header from '../components/Header'
 
 function timeAgo(dateString) {
   const seconds = Math.floor((new Date() - new Date(dateString)) / 1000)
@@ -108,44 +109,47 @@ function Notifications() {
   }
 
   return (
-    <div className="bg-[#0b071e] text-white min-h-screen p-6 pb-24">
-      <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => navigate(-1)} className="text-2xl">‹</button>
-        <h1 className="text-2xl font-black">Notifications</h1>
-      </div>
-
-      {notifications.length === 0 ? (
-        <p className="text-slate-500 text-center mt-12">No notifications yet.</p>
-      ) : (
-        <div className="space-y-3">
-          {notifications.map((notif) => (
-            <div
-              key={notif.id}
-              onClick={() => handleNotifClick(notif)}
-              className={`border rounded-2xl p-4 flex items-center gap-4 cursor-pointer transition-all ${
-                notif.is_read
-                  ? 'bg-black/40 border-white/10 hover:bg-black/60'
-                  : 'bg-pink-500/10 border-pink-500/30 hover:bg-pink-500/20'
-              }`}
-            >
-              <div className="w-12 h-12 rounded-full bg-slate-800 overflow-hidden flex-shrink-0">
-                <img
-                  src={notif.actor.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${notif.actor.handle}`}
-                  className="w-full h-full object-cover"
-                  alt="avatar"
-                />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm">
-                  <span className="font-bold">{notif.actor.display_name}</span> started following you
-                </p>
-                <p className="text-slate-500 text-xs mt-1">{timeAgo(notif.created_at)}</p>
-              </div>
-              {!notif.is_read && <div className="w-2 h-2 rounded-full bg-pink-500 flex-shrink-0"></div>}
-            </div>
-          ))}
+    <div className="bg-[#0b071e] text-white min-h-screen pb-24">
+      <Header />
+      <div className="px-6">
+        <div className="flex items-center gap-3 mb-6">
+          <button onClick={() => navigate(-1)} className="text-2xl">‹</button>
+          <h1 className="text-2xl font-black">Notifications</h1>
         </div>
-      )}
+
+        {notifications.length === 0 ? (
+          <p className="text-slate-500 text-center mt-12">No notifications yet.</p>
+        ) : (
+          <div className="space-y-3">
+            {notifications.map((notif) => (
+              <div
+                key={notif.id}
+                onClick={() => handleNotifClick(notif)}
+                className={`border rounded-2xl p-4 flex items-center gap-4 cursor-pointer transition-all ${
+                  notif.is_read
+                    ? 'bg-black/40 border-white/10 hover:bg-black/60'
+                    : 'bg-pink-500/10 border-pink-500/30 hover:bg-pink-500/20'
+                }`}
+              >
+                <div className="w-12 h-12 rounded-full bg-slate-800 overflow-hidden flex-shrink-0">
+                  <img
+                    src={notif.actor.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${notif.actor.handle}`}
+                    className="w-full h-full object-cover"
+                    alt="avatar"
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm">
+                    <span className="font-bold">{notif.actor.display_name}</span> started following you
+                  </p>
+                  <p className="text-slate-500 text-xs mt-1">{timeAgo(notif.created_at)}</p>
+                </div>
+                {!notif.is_read && <div className="w-2 h-2 rounded-full bg-pink-500 flex-shrink-0"></div>}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       <Navbar />
     </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import Navbar from '../components/Navbar'
+import Header from '../components/Header'
 
 function FollowList({ mode }) {
   const navigate = useNavigate()
@@ -86,41 +87,44 @@ function FollowList({ mode }) {
   }
 
   return (
-    <div className="bg-[#0b071e] text-white min-h-screen p-6 pb-24">
-      <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => navigate(-1)} className="text-2xl">‹</button>
-        <h1 className="text-2xl font-black">
-          {title} {profileOwner?.handle ? `· @${profileOwner.handle}` : ''}
-        </h1>
-      </div>
-
-      {list.length === 0 ? (
-        <p className="text-slate-500 text-center mt-12">
-          {mode === 'following' ? 'Not following anyone yet.' : 'No followers yet.'}
-        </p>
-      ) : (
-        <div className="space-y-3">
-          {list.map((person) => (
-            <div
-              key={person.id}
-              onClick={() => navigate(`/profile?handle=${person.handle}`)}
-              className="bg-black/40 border border-white/10 rounded-2xl p-4 flex items-center gap-4 cursor-pointer hover:bg-black/60 transition-all"
-            >
-              <div className="w-12 h-12 rounded-full bg-slate-800 overflow-hidden flex-shrink-0">
-                <img
-                  src={person.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${person.handle}`}
-                  className="w-full h-full object-cover"
-                  alt="avatar"
-                />
-              </div>
-              <div>
-                <p className="font-bold">{person.display_name}</p>
-                <p className="text-slate-500 text-sm">@{person.handle}</p>
-              </div>
-            </div>
-          ))}
+    <div className="bg-[#0b071e] text-white min-h-screen pb-24">
+      <Header />
+      <div className="px-6">
+        <div className="flex items-center gap-3 mb-6">
+          <button onClick={() => navigate(-1)} className="text-2xl">‹</button>
+          <h1 className="text-2xl font-black">
+            {title} {profileOwner?.handle ? `· @${profileOwner.handle}` : ''}
+          </h1>
         </div>
-      )}
+
+        {list.length === 0 ? (
+          <p className="text-slate-500 text-center mt-12">
+            {mode === 'following' ? 'Not following anyone yet.' : 'No followers yet.'}
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {list.map((person) => (
+              <div
+                key={person.id}
+                onClick={() => navigate(`/profile?handle=${person.handle}`)}
+                className="bg-black/40 border border-white/10 rounded-2xl p-4 flex items-center gap-4 cursor-pointer hover:bg-black/60 transition-all"
+              >
+                <div className="w-12 h-12 rounded-full bg-slate-800 overflow-hidden flex-shrink-0">
+                  <img
+                    src={person.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${person.handle}`}
+                    className="w-full h-full object-cover"
+                    alt="avatar"
+                  />
+                </div>
+                <div>
+                  <p className="font-bold">{person.display_name}</p>
+                  <p className="text-slate-500 text-sm">@{person.handle}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       <Navbar />
     </div>

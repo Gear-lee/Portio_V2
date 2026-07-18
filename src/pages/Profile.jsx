@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import Navbar from '../components/Navbar'
+import Header from '../components/Header'
 
 function Profile() {
   const navigate = useNavigate()
@@ -133,100 +134,103 @@ function Profile() {
   }
 
   return (
-    <div className="bg-[#0b071e] text-white min-h-screen p-6 pb-24">
-      <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-6 rounded-3xl mb-6">
-        <div className="flex items-start gap-4 mb-5">
-          <div className="w-20 h-20 rounded-full bg-slate-800 border-2 border-pink-500 overflow-hidden flex-shrink-0">
-            <img
-              src={targetUser.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${targetUser.handle}`}
-              className="w-full h-full object-cover"
-              alt="avatar"
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h2 className="text-2xl font-bold truncate">{targetUser.display_name || 'No Name'}</h2>
-            <p className="text-pink-500 text-sm">@{targetUser.handle || 'user'}</p>
+    <div className="bg-[#0b071e] text-white min-h-screen pb-24">
+      <Header />
+      <div className="px-6">
+        <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-6 rounded-3xl mb-6">
+          <div className="flex items-start gap-4 mb-5">
+            <div className="w-20 h-20 rounded-full bg-slate-800 border-2 border-pink-500 overflow-hidden flex-shrink-0">
+              <img
+                src={targetUser.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${targetUser.handle}`}
+                className="w-full h-full object-cover"
+                alt="avatar"
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h2 className="text-2xl font-bold truncate">{targetUser.display_name || 'No Name'}</h2>
+              <p className="text-pink-500 text-sm">@{targetUser.handle || 'user'}</p>
+            </div>
+
+            {isOwnProfile ? (
+              <button
+                onClick={() => navigate('/settings')}
+                className="px-5 py-2 rounded-full font-bold text-sm whitespace-nowrap bg-white/10 text-white hover:bg-white/20 transition-all"
+              >
+                Edit Profile
+              </button>
+            ) : (
+              <button
+                onClick={toggleFollow}
+                disabled={followLoading}
+                className={`px-5 py-2 rounded-full font-bold text-sm whitespace-nowrap transition-all disabled:opacity-50 ${
+                  isFollowing
+                    ? 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                    : 'bg-orange-500 text-white hover:bg-orange-400'
+                }`}
+              >
+                {isFollowing ? 'Unfollow' : 'Follow'}
+              </button>
+            )}
           </div>
 
-          {isOwnProfile ? (
-            <button
-              onClick={() => navigate('/settings')}
-              className="px-5 py-2 rounded-full font-bold text-sm whitespace-nowrap bg-white/10 text-white hover:bg-white/20 transition-all"
-            >
-              Edit Profile
+          <p className="text-slate-400 text-sm mb-5">{targetUser.bio || 'No bio yet.'}</p>
+
+          <div className="flex gap-8 border-t border-white/10 pt-4">
+            <button onClick={() => navigate(`/following?handle=${targetUser.handle}`)} className="text-left">
+              <span className="font-bold text-lg block">{followingCount}</span>
+              <p className="text-xs text-slate-500">Following</p>
             </button>
-          ) : (
-            <button
-              onClick={toggleFollow}
-              disabled={followLoading}
-              className={`px-5 py-2 rounded-full font-bold text-sm whitespace-nowrap transition-all disabled:opacity-50 ${
-                isFollowing
-                  ? 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                  : 'bg-orange-500 text-white hover:bg-orange-400'
-              }`}
-            >
-              {isFollowing ? 'Unfollow' : 'Follow'}
+            <button onClick={() => navigate(`/followers?handle=${targetUser.handle}`)} className="text-left">
+              <span className="font-bold text-lg block">{followersCount}</span>
+              <p className="text-xs text-slate-500">Followers</p>
             </button>
+          </div>
+        </div>
+
+        <div className="bg-black/40 border border-white/10 rounded-3xl p-2">
+          <div className="p-4 border-b border-white/5 flex justify-between items-center cursor-pointer">
+            <span>Recent Play</span> <span className="text-slate-600">›</span>
+          </div>
+          <div
+            className="p-4 border-b border-white/5 flex justify-between items-center cursor-pointer"
+            onClick={() => navigate(`/following?handle=${targetUser.handle}`)}
+          >
+            <span>Following</span> <span className="text-slate-600">›</span>
+          </div>
+          <div
+            className="p-4 border-b border-white/5 flex justify-between items-center cursor-pointer"
+            onClick={() => navigate(`/followers?handle=${targetUser.handle}`)}
+          >
+            <span>Followers</span> <span className="text-slate-600">›</span>
+          </div>
+
+          {isOwnProfile && (
+            <>
+              <div
+                className="p-4 border-b border-white/5 flex justify-between items-center cursor-pointer"
+                onClick={() => navigate('/notifications')}
+              >
+                <span>Notifications</span> <span className="text-slate-600">›</span>
+              </div>
+              <div
+                className="p-4 flex justify-between items-center cursor-pointer"
+                onClick={() => navigate('/settings')}
+              >
+                <span>Profile Settings</span> <span className="text-slate-600">›</span>
+              </div>
+            </>
           )}
         </div>
 
-        <p className="text-slate-400 text-sm mb-5">{targetUser.bio || 'No bio yet.'}</p>
-
-        <div className="flex gap-8 border-t border-white/10 pt-4">
-          <button onClick={() => navigate(`/following?handle=${targetUser.handle}`)} className="text-left">
-            <span className="font-bold text-lg block">{followingCount}</span>
-            <p className="text-xs text-slate-500">Following</p>
-          </button>
-          <button onClick={() => navigate(`/followers?handle=${targetUser.handle}`)} className="text-left">
-            <span className="font-bold text-lg block">{followersCount}</span>
-            <p className="text-xs text-slate-500">Followers</p>
-          </button>
-        </div>
-      </div>
-
-      <div className="bg-black/40 border border-white/10 rounded-3xl p-2">
-        <div className="p-4 border-b border-white/5 flex justify-between items-center cursor-pointer">
-          <span>Recent Play</span> <span className="text-slate-600">›</span>
-        </div>
-        <div
-          className="p-4 border-b border-white/5 flex justify-between items-center cursor-pointer"
-          onClick={() => navigate(`/following?handle=${targetUser.handle}`)}
-        >
-          <span>Following</span> <span className="text-slate-600">›</span>
-        </div>
-        <div
-          className="p-4 border-b border-white/5 flex justify-between items-center cursor-pointer"
-          onClick={() => navigate(`/followers?handle=${targetUser.handle}`)}
-        >
-          <span>Followers</span> <span className="text-slate-600">›</span>
-        </div>
-
         {isOwnProfile && (
-          <>
-            <div
-              className="p-4 border-b border-white/5 flex justify-between items-center cursor-pointer"
-              onClick={() => navigate('/notifications')}
-            >
-              <span>Notifications</span> <span className="text-slate-600">›</span>
-            </div>
-            <div
-              className="p-4 flex justify-between items-center cursor-pointer"
-              onClick={() => navigate('/settings')}
-            >
-              <span>Profile Settings</span> <span className="text-slate-600">›</span>
-            </div>
-          </>
+          <button
+            onClick={logout}
+            className="w-full mt-6 py-4 border border-red-500/30 text-red-500 rounded-2xl font-bold"
+          >
+            SIGN OUT ACCOUNT
+          </button>
         )}
       </div>
-
-      {isOwnProfile && (
-        <button
-          onClick={logout}
-          className="w-full mt-6 py-4 border border-red-500/30 text-red-500 rounded-2xl font-bold"
-        >
-          SIGN OUT ACCOUNT
-        </button>
-      )}
 
       <Navbar />
     </div>
