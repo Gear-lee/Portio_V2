@@ -32,7 +32,7 @@ function Notifications() {
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'notifications', filter: `recipient_id=eq.${userId}` },
-        (payload) => {
+        () => {
           loadNotifications(userId)
         }
       )
@@ -79,7 +79,7 @@ function Notifications() {
 
     const enriched = notifs.map((n) => ({
       ...n,
-      actor: actorMap[n.actor_id] || { username: 'someone' },
+      actor: actorMap[n.actor_id] || { handle: 'someone', display_name: 'Someone' },
     }))
 
     setNotifications(enriched)
@@ -95,9 +95,8 @@ function Notifications() {
 
   function handleNotifClick(notif) {
     if (notif.type === 'follow') {
-      navigate(`/profile?username=${notif.actor.username}`)
+      navigate(`/profile?handle=${notif.actor.handle}`)
     }
-    // nanti nambah: else if (notif.type === 'game_update') { navigate(`/game/${notif.game_id}`) }
   }
 
   if (loading) {
@@ -131,14 +130,14 @@ function Notifications() {
             >
               <div className="w-12 h-12 rounded-full bg-slate-800 overflow-hidden flex-shrink-0">
                 <img
-                  src={notif.actor.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${notif.actor.username}`}
+                  src={notif.actor.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${notif.actor.handle}`}
                   className="w-full h-full object-cover"
                   alt="avatar"
                 />
               </div>
               <div className="flex-1">
                 <p className="text-sm">
-                  <span className="font-bold">{notif.actor.username}</span> started following you
+                  <span className="font-bold">{notif.actor.display_name}</span> started following you
                 </p>
                 <p className="text-slate-500 text-xs mt-1">{timeAgo(notif.created_at)}</p>
               </div>

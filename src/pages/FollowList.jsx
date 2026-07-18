@@ -6,7 +6,7 @@ import Navbar from '../components/Navbar'
 function FollowList({ mode }) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const usernameParam = searchParams.get('username')
+  const handleParam = searchParams.get('handle')
 
   const [loading, setLoading] = useState(true)
   const [list, setList] = useState([])
@@ -14,7 +14,7 @@ function FollowList({ mode }) {
 
   useEffect(() => {
     init()
-  }, [usernameParam, mode])
+  }, [handleParam, mode])
 
   async function init() {
     setLoading(true)
@@ -27,11 +27,11 @@ function FollowList({ mode }) {
 
     let ownerId = session.user.id
 
-    if (usernameParam) {
+    if (handleParam) {
       const { data: ownerData, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('username', usernameParam)
+        .eq('handle', handleParam)
         .single()
 
       if (error || !ownerData) {
@@ -90,7 +90,7 @@ function FollowList({ mode }) {
       <div className="flex items-center gap-3 mb-6">
         <button onClick={() => navigate(-1)} className="text-2xl">‹</button>
         <h1 className="text-2xl font-black">
-          {title} {profileOwner?.username ? `· @${profileOwner.username}` : ''}
+          {title} {profileOwner?.handle ? `· @${profileOwner.handle}` : ''}
         </h1>
       </div>
 
@@ -103,19 +103,19 @@ function FollowList({ mode }) {
           {list.map((person) => (
             <div
               key={person.id}
-              onClick={() => navigate(`/profile?username=${person.username}`)}
+              onClick={() => navigate(`/profile?handle=${person.handle}`)}
               className="bg-black/40 border border-white/10 rounded-2xl p-4 flex items-center gap-4 cursor-pointer hover:bg-black/60 transition-all"
             >
               <div className="w-12 h-12 rounded-full bg-slate-800 overflow-hidden flex-shrink-0">
                 <img
-                  src={person.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${person.username}`}
+                  src={person.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${person.handle}`}
                   className="w-full h-full object-cover"
                   alt="avatar"
                 />
               </div>
               <div>
-                <p className="font-bold">{person.username}</p>
-                <p className="text-slate-500 text-sm">@{person.username}</p>
+                <p className="font-bold">{person.display_name}</p>
+                <p className="text-slate-500 text-sm">@{person.handle}</p>
               </div>
             </div>
           ))}

@@ -6,7 +6,7 @@ import Navbar from '../components/Navbar'
 function Profile() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const usernameParam = searchParams.get('username')
+  const handleParam = searchParams.get('handle')
 
   const [loading, setLoading] = useState(true)
   const [currentUser, setCurrentUser] = useState(null)
@@ -19,7 +19,7 @@ function Profile() {
 
   useEffect(() => {
     init()
-  }, [usernameParam])
+  }, [handleParam])
 
   async function init() {
     setLoading(true)
@@ -34,7 +34,7 @@ function Profile() {
     let profileData = null
     let ownProfile = false
 
-    if (!usernameParam) {
+    if (!handleParam) {
       ownProfile = true
       const { data, error } = await supabase
         .from('profiles')
@@ -43,13 +43,13 @@ function Profile() {
         .single()
 
       profileData = error || !data
-        ? { id: session.user.id, username: 'new_user', bio: '', avatar_url: null }
+        ? { id: session.user.id, handle: 'new_user', display_name: 'New User', bio: '', avatar_url: null }
         : data
     } else {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('username', usernameParam)
+        .eq('handle', handleParam)
         .single()
 
       if (error || !data) {
@@ -138,14 +138,14 @@ function Profile() {
         <div className="flex items-start gap-4 mb-5">
           <div className="w-20 h-20 rounded-full bg-slate-800 border-2 border-pink-500 overflow-hidden flex-shrink-0">
             <img
-              src={targetUser.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${targetUser.username}`}
+              src={targetUser.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${targetUser.handle}`}
               className="w-full h-full object-cover"
               alt="avatar"
             />
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="text-2xl font-bold truncate">{targetUser.username || 'No Name'}</h2>
-            <p className="text-pink-500 text-sm">@{targetUser.username || 'user'}</p>
+            <h2 className="text-2xl font-bold truncate">{targetUser.display_name || 'No Name'}</h2>
+            <p className="text-pink-500 text-sm">@{targetUser.handle || 'user'}</p>
           </div>
 
           {isOwnProfile ? (
@@ -173,11 +173,11 @@ function Profile() {
         <p className="text-slate-400 text-sm mb-5">{targetUser.bio || 'No bio yet.'}</p>
 
         <div className="flex gap-8 border-t border-white/10 pt-4">
-          <button onClick={() => navigate(`/following?username=${targetUser.username}`)} className="text-left">
+          <button onClick={() => navigate(`/following?handle=${targetUser.handle}`)} className="text-left">
             <span className="font-bold text-lg block">{followingCount}</span>
             <p className="text-xs text-slate-500">Following</p>
           </button>
-          <button onClick={() => navigate(`/followers?username=${targetUser.username}`)} className="text-left">
+          <button onClick={() => navigate(`/followers?handle=${targetUser.handle}`)} className="text-left">
             <span className="font-bold text-lg block">{followersCount}</span>
             <p className="text-xs text-slate-500">Followers</p>
           </button>
@@ -190,13 +190,13 @@ function Profile() {
         </div>
         <div
           className="p-4 border-b border-white/5 flex justify-between items-center cursor-pointer"
-          onClick={() => navigate(`/following?username=${targetUser.username}`)}
+          onClick={() => navigate(`/following?handle=${targetUser.handle}`)}
         >
           <span>Following</span> <span className="text-slate-600">›</span>
         </div>
         <div
           className="p-4 border-b border-white/5 flex justify-between items-center cursor-pointer"
-          onClick={() => navigate(`/followers?username=${targetUser.username}`)}
+          onClick={() => navigate(`/followers?handle=${targetUser.handle}`)}
         >
           <span>Followers</span> <span className="text-slate-600">›</span>
         </div>

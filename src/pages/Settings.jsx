@@ -11,7 +11,8 @@ function Settings() {
   const [saving, setSaving] = useState(false)
   const [userId, setUserId] = useState(null)
 
-  const [username, setUsername] = useState('')
+  const [displayName, setDisplayName] = useState('')
+  const [handle, setHandle] = useState('')
   const [bio, setBio] = useState('')
   const [avatarUrl, setAvatarUrl] = useState(null)
 
@@ -40,7 +41,8 @@ function Settings() {
       .single()
 
     if (data) {
-      setUsername(data.username || '')
+      setDisplayName(data.display_name || '')
+      setHandle(data.handle || '')
       setBio(data.bio || '')
       setAvatarUrl(data.avatar_url || null)
     }
@@ -101,10 +103,11 @@ function Settings() {
   async function handleSave() {
     setSaving(true)
 
+    // handle TIDAK diupdate dari sini karena bersifat permanen
     const { error } = await supabase
       .from('profiles')
       .update({
-        username,
+        display_name: displayName,
         bio,
         avatar_url: avatarUrl,
         updated_at: new Date().toISOString(),
@@ -138,7 +141,7 @@ function Settings() {
       <div className="flex flex-col items-center mb-8">
         <div className="w-28 h-28 rounded-full bg-slate-800 border-2 border-pink-500 overflow-hidden mb-3">
           <img
-            src={avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`}
+            src={avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${handle}`}
             className="w-full h-full object-cover"
             alt="avatar"
           />
@@ -151,13 +154,28 @@ function Settings() {
 
       <div className="space-y-4">
         <div>
-          <label className="text-slate-400 text-sm mb-1 block">Username</label>
+          <label className="text-slate-400 text-sm mb-1 block">Name</label>
           <input
             type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
             className="w-full bg-slate-900 border border-white/10 p-4 rounded-xl focus:border-pink-500 outline-none"
           />
+        </div>
+
+        <div>
+          <label className="text-slate-400 text-sm mb-1 block">
+            Handle <span className="text-slate-600">(cannot be changed)</span>
+          </label>
+          <div className="flex items-center w-full bg-slate-900/50 border border-white/5 rounded-xl">
+            <span className="pl-4 text-slate-600 font-bold select-none">@</span>
+            <input
+              type="text"
+              value={handle}
+              disabled
+              className="w-full bg-transparent p-4 pl-1 text-slate-500 outline-none cursor-not-allowed"
+            />
+          </div>
         </div>
 
         <div>
