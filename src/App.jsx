@@ -9,6 +9,8 @@ import Notifications from './pages/Notifications'
 import Create from './pages/Create'
 import Projects from './pages/Projects'
 import ProjectDashboard from './pages/ProjectDashboard'
+import CharacterSettings from './pages/CharacterSettings'
+import GeneralSettings from './pages/GeneralSettings'
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
         <Route path="/create" element={<Create />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/project/:projectId" element={<ProjectDashboard />} />
+        <Route path="/project/:projectId/characters" element={<CharacterSettings />} />
+        <Route path="/project/:projectId/general-settings" element={<GeneralSettings />} />
       </Routes>
     </BrowserRouter>
   )
