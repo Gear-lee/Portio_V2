@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
-import Navbar from '../components/Navbar'
-import Header from '../components/Header'
+import Layout from '../components/Layout'
 
 function Create() {
   const navigate = useNavigate()
@@ -34,9 +33,8 @@ function Create() {
   }
 
   return (
-    <div className="bg-[#0b071e] text-white min-h-screen flex flex-col pb-24">
-      <Header />
-      <div className="flex-1 flex items-center justify-center p-6">
+    <Layout>
+      <div className="flex-1 flex items-center justify-center p-6 min-h-[70vh]">
         <button
           onClick={handleCreateProject}
           disabled={creating}
@@ -45,9 +43,7 @@ function Create() {
           {creating ? 'Creating...' : '+ Create New Project'}
         </button>
       </div>
-
-      <Navbar />
-    </div>
+    </Layout>
   )
 }
 

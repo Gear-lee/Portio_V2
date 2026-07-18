@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
-import Navbar from '../components/Navbar'
-import Header from '../components/Header'
+import Layout from '../components/Layout'
 
 function Dashboard() {
   const [loading, setLoading] = useState(true)
@@ -40,8 +39,7 @@ function Dashboard() {
   }
 
   return (
-    <div className="bg-[#0b071e] text-white min-h-screen pb-24">
-      <Header />
+    <Layout>
       <div className="px-6">
         <h1 className="text-3xl font-black mb-6">Dashboard</h1>
 
@@ -53,9 +51,7 @@ function Dashboard() {
           <p>Welcome back, {userEmail}!</p>
         </div>
       </div>
-
-      <Navbar />
-    </div>
+    </Layout>
   )
 }
 

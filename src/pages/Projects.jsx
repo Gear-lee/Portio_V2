@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
-import Navbar from '../components/Navbar'
-import Header from '../components/Header'
+import Layout from '../components/Layout'
 
 function Projects() {
   const navigate = useNavigate()
@@ -35,15 +34,14 @@ function Projects() {
 
   if (loading) {
     return (
-      <div className="bg-[#0b071e] text-white min-h-screen flex items-center justify-center">
+      <div className="text-white min-h-screen flex items-center justify-center">
         <p className="text-slate-400">Loading...</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-[#0b071e] text-white min-h-screen pb-24">
-      <Header />
+    <Layout>
       <div className="px-6">
         <h1 className="text-3xl font-black mb-6">Your Projects</h1>
 
@@ -69,9 +67,7 @@ function Projects() {
           </div>
         )}
       </div>
-
-      <Navbar />
-    </div>
+    </Layout>
   )
 }
 

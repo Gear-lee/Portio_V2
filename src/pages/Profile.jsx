@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
-import Navbar from '../components/Navbar'
-import Header from '../components/Header'
+import Layout from '../components/Layout'
 
 function Profile() {
   const navigate = useNavigate()
@@ -127,16 +126,15 @@ function Profile() {
 
   if (loading) {
     return (
-      <div className="bg-[#0b071e] text-white min-h-screen flex items-center justify-center">
+      <div className="text-white min-h-screen flex items-center justify-center">
         <p className="text-slate-400">Loading...</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-[#0b071e] text-white min-h-screen pb-24">
-      <Header />
-      <div className="px-6">
+    <Layout>
+      <div className="px-6 py-2">
         <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-6 rounded-3xl mb-6">
           <div className="flex items-start gap-4 mb-5">
             <div className="w-20 h-20 rounded-full bg-slate-800 border-2 border-pink-500 overflow-hidden flex-shrink-0">
@@ -231,9 +229,7 @@ function Profile() {
           </button>
         )}
       </div>
-
-      <Navbar />
-    </div>
+    </Layout>
   )
 }
 

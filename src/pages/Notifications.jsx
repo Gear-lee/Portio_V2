@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
-import Navbar from '../components/Navbar'
-import Header from '../components/Header'
+import Layout from '../components/Layout'
 
 function timeAgo(dateString) {
   const seconds = Math.floor((new Date() - new Date(dateString)) / 1000)
@@ -102,15 +101,14 @@ function Notifications() {
 
   if (loading) {
     return (
-      <div className="bg-[#0b071e] text-white min-h-screen flex items-center justify-center">
+      <div className="text-white min-h-screen flex items-center justify-center">
         <p className="text-slate-400">Loading...</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-[#0b071e] text-white min-h-screen pb-24">
-      <Header />
+    <Layout>
       <div className="px-6">
         <div className="flex items-center gap-3 mb-6">
           <button onClick={() => navigate(-1)} className="text-2xl">‹</button>
@@ -150,9 +148,7 @@ function Notifications() {
           </div>
         )}
       </div>
-
-      <Navbar />
-    </div>
+    </Layout>
   )
 }
 

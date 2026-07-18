@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
-import Header from '../components/Header'
+import Layout from '../components/Layout'
 
 function ProjectDashboard() {
   const navigate = useNavigate()
@@ -46,16 +46,15 @@ function ProjectDashboard() {
 
   if (loading) {
     return (
-      <div className="bg-[#0b071e] text-white min-h-screen flex items-center justify-center">
+      <div className="text-white min-h-screen flex items-center justify-center">
         <p className="text-slate-400">Loading...</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-[#0b071e] text-white min-h-screen">
-      <Header />
-      <div className="px-6">
+    <Layout>
+      <div className="px-6 pb-6">
         <div className="flex items-center gap-3 mb-6">
           <button onClick={() => navigate('/projects')} className="text-2xl">‹</button>
           <h1 className="text-2xl font-black truncate">{project.title}</h1>
@@ -96,7 +95,7 @@ function ProjectDashboard() {
           </button>
         </div>
       </div>
-    </div>
+    </Layout>
   )
 }
 
