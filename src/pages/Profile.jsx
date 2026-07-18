@@ -203,7 +203,10 @@ function Profile() {
 
         {isOwnProfile && (
           <>
-            <div className="p-4 border-b border-white/5 flex justify-between items-center cursor-pointer">
+            <div
+              className="p-4 border-b border-white/5 flex justify-between items-center cursor-pointer"
+              onClick={() => navigate('/notifications')}
+            >
               <span>Notifications</span> <span className="text-slate-600">›</span>
             </div>
             <div
