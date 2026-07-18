@@ -43,7 +43,7 @@ function Profile() {
         .single()
 
       profileData = error || !data
-        ? { id: session.user.id, username: 'user_baru', bio: '', avatar_url: null }
+        ? { id: session.user.id, username: 'new_user', bio: '', avatar_url: null }
         : data
     } else {
       const { data, error } = await supabase
@@ -53,7 +53,7 @@ function Profile() {
         .single()
 
       if (error || !data) {
-        alert('User tidak ditemukan.')
+        alert('User not found.')
         navigate('/dashboard')
         return
       }
@@ -144,7 +144,7 @@ function Profile() {
             />
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="text-2xl font-bold truncate">{targetUser.username || 'Tanpa Nama'}</h2>
+            <h2 className="text-2xl font-bold truncate">{targetUser.username || 'No Name'}</h2>
             <p className="text-pink-500 text-sm">@{targetUser.username || 'user'}</p>
           </div>
 
@@ -170,7 +170,7 @@ function Profile() {
           )}
         </div>
 
-        <p className="text-slate-400 text-sm mb-5">{targetUser.bio || 'Belum ada bio.'}</p>
+        <p className="text-slate-400 text-sm mb-5">{targetUser.bio || 'No bio yet.'}</p>
 
         <div className="flex gap-8 border-t border-white/10 pt-4">
           <button onClick={() => navigate(`/following?username=${targetUser.username}`)} className="text-left">

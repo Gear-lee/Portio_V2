@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams, useParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import Navbar from '../components/Navbar'
 
 function FollowList({ mode }) {
-  // mode = 'following' atau 'followers'
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const usernameParam = searchParams.get('username')
@@ -27,7 +26,6 @@ function FollowList({ mode }) {
     }
 
     let ownerId = session.user.id
-    let ownerUsername = usernameParam
 
     if (usernameParam) {
       const { data: ownerData, error } = await supabase
@@ -37,7 +35,7 @@ function FollowList({ mode }) {
         .single()
 
       if (error || !ownerData) {
-        alert('User tidak ditemukan.')
+        alert('User not found.')
         navigate('/dashboard')
         return
       }
@@ -52,8 +50,6 @@ function FollowList({ mode }) {
       setProfileOwner(ownerData)
     }
 
-    // mode 'following' -> cari orang yang follower_id = ownerId (siapa aja yang DIA follow)
-    // mode 'followers' -> cari orang yang following_id = ownerId (siapa aja yang FOLLOW dia)
     const filterField = mode === 'following' ? 'follower_id' : 'following_id'
     const targetField = mode === 'following' ? 'following_id' : 'follower_id'
 
@@ -100,7 +96,7 @@ function FollowList({ mode }) {
 
       {list.length === 0 ? (
         <p className="text-slate-500 text-center mt-12">
-          {mode === 'following' ? 'Belum mengikuti siapa-siapa.' : 'Belum ada pengikut.'}
+          {mode === 'following' ? 'Not following anyone yet.' : 'No followers yet.'}
         </p>
       ) : (
         <div className="space-y-3">

@@ -4,6 +4,7 @@ import Auth from './pages/Auth'
 import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
 import FollowList from './pages/FollowList'
+import Settings from './pages/Settings'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/following" element={<FollowList mode="following" />} />
         <Route path="/followers" element={<FollowList mode="followers" />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </BrowserRouter>
   )

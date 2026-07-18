@@ -11,7 +11,7 @@ function Auth() {
 
   async function handleAuth() {
     if (!email || !password) {
-      alert('Email dan password wajib diisi.')
+      alert('Email and password are required.')
       return
     }
 
@@ -70,7 +70,7 @@ function Auth() {
           disabled={loading}
           className="w-full bg-pink-600 hover:bg-pink-500 py-4 rounded-xl font-bold transition-all disabled:opacity-50"
         >
-          {loading ? 'Memproses...' : (isLogin ? 'Sign In' : 'Register')}
+          {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Register')}
         </button>
 
         <p className="text-center text-sm text-slate-400">
