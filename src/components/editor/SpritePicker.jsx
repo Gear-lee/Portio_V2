@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { getPresetById } from '../../data/presetCharacters'
 import { ENTER_EXIT_EFFECTS, REACTION_EFFECTS } from '../../data/effectOptions'
 
@@ -7,10 +8,22 @@ function SpritePicker({ characters, sprite, onChange, onRemove, canRemove }) {
   const selectedCharacter = characters.find((c) => c.id === sprite.sprite_character_id)
   const preset = selectedCharacter ? getPresetById(selectedCharacter.preset_id) : null
 
+  // Local state biar slider lincah dan ga tabrakan ama debounce database
+  const [localX, setLocalX] = useState(sprite.position || 50)
+  const [localY, setLocalY] = useState(sprite.sprite_y_offset || 0)
+  const [localZoom, setLocalZoom] = useState(sprite.sprite_zoom || 100)
+
+  // Sinkronisasi ulang local state kalau page-nya beneran berganti
+  useEffect(() => {
+    setLocalX(sprite.position || 50)
+    setLocalY(sprite.sprite_y_offset || 0)
+    setLocalZoom(sprite.sprite_zoom || 100)
+  }, [sprite.id, sprite.position, sprite.sprite_y_offset, sprite.sprite_zoom])
+
   return (
-    <div className="bg-black/30 border border-white/10 rounded-2xl p-4 space-y-3">
+    <div className="bg-black/30 border border-white/10 rounded-2xl p-4 space-y-4">
       <div className="flex items-center justify-between">
-        <label className="text-slate-400 text-sm">Sprite</label>
+        <label className="text-slate-400 text-sm font-bold">Sprite</label>
         {canRemove && (
           <button onClick={onRemove} className="text-red-400 text-xs font-bold">
             Remove
@@ -18,23 +31,65 @@ function SpritePicker({ characters, sprite, onChange, onRemove, canRemove }) {
         )}
       </div>
 
-      {/* Position */}
-      <div className="flex gap-2">
-        {['left', 'center', 'right'].map((pos) => (
-          <button
-            key={pos}
-            onClick={() => onChange('position', pos)}
-            className={`flex-1 py-2 rounded-xl text-xs font-bold capitalize transition-all ${
-              sprite.position === pos ? 'bg-pink-600 text-white' : 'bg-slate-900 text-slate-400'
-            }`}
-          >
-            {pos}
-          </button>
-        ))}
+      {/* --- Kumpulan Slider Transformasi di Atas --- */}
+      <div className="space-y-4">
+        {/* Horizontal Position */}
+        <div>
+          <div className="flex justify-between text-xs text-slate-400 mb-1">
+            <span>Horizontal Position</span>
+            <span>{localX}%</span>
+          </div>
+          <input 
+            type="range" 
+            min="0" 
+            max="100" 
+            value={localX} 
+            onChange={(e) => setLocalX(parseInt(e.target.value, 10))}
+            onMouseUp={() => onChange('position', localX)}
+            onTouchEnd={() => onChange('position', localX)}
+            className="w-full h-2 bg-pink-600 rounded-lg appearance-none cursor-pointer" 
+          />
+        </div>
+
+        {/* Vertical Position */}
+        <div>
+          <div className="flex justify-between text-xs text-slate-400 mb-1">
+            <span>Vertical Position</span>
+            <span>{localY}</span>
+          </div>
+          <input 
+            type="range" 
+            min="-100" 
+            max="100" 
+            value={localY} 
+            onChange={(e) => setLocalY(parseInt(e.target.value, 10))}
+            onMouseUp={() => onChange('sprite_y_offset', localY)}
+            onTouchEnd={() => onChange('sprite_y_offset', localY)}
+            className="w-full h-2 bg-green-600 rounded-lg appearance-none cursor-pointer" 
+          />
+        </div>
+
+        {/* Zoom */}
+        <div>
+          <div className="flex justify-between text-xs text-slate-400 mb-1">
+            <span>Zoom</span>
+            <span>{localZoom}%</span>
+          </div>
+          <input 
+            type="range" 
+            min="100" 
+            max="250" 
+            value={localZoom} 
+            onChange={(e) => setLocalZoom(parseInt(e.target.value, 10))}
+            onMouseUp={() => onChange('sprite_zoom', localZoom)}
+            onTouchEnd={() => onChange('sprite_zoom', localZoom)}
+            className="w-full h-2 bg-blue-600 rounded-lg appearance-none cursor-pointer" 
+          />
+        </div>
       </div>
 
       {/* Mode toggle */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 pt-2 border-t border-white/10">
         <button
           onClick={() => onChange('sprite_mode', 'preset')}
           className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all ${
@@ -103,8 +158,9 @@ function SpritePicker({ characters, sprite, onChange, onRemove, canRemove }) {
         />
       )}
 
+      {/* Bagian Efek Bawaan */}
       {sprite.sprite_mode && (
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-2 border-t border-white/10 pt-4">
           <div>
             <label className="text-slate-400 text-xs mb-1 block">Enter</label>
             <select

@@ -1,99 +1,116 @@
-import { useEffect, useRef, useState } from 'react'
+function GamePreview({ backgroundEmbed, sprites, dialogName, dialogText, choices = [] }) {
+  // Arsitektur Future-Proof Opacity Tokens
+  const choiceBoxOpacity = 0.5; 
+  const dialogBoxOpacity = 0.8; 
+  const nameBoxOpacity = 0.9;   
 
-const POSITION_CLASSES = {
-  left: 'left-[10%] -translate-x-0',
-  center: 'left-1/2 -translate-x-1/2',
-  right: 'right-[10%] left-auto translate-x-0',
-}
-
-function GamePreview({ backgroundEmbed, sprites = [], dialogName, dialogText }) {
-  const textRef = useRef(null)
-  const boxRef = useRef(null)
-  const [fontSize, setFontSize] = useState(13)
-
-  useEffect(() => {
-    if (!textRef.current || !boxRef.current) return
-
-    let size = 13
-    setFontSize(size)
-
-    const maxHeight = boxRef.current.clientHeight
-
-    const checkFit = () => {
-      if (textRef.current.scrollHeight > maxHeight && size > 8) {
-        size -= 1
-        setFontSize(size)
-      }
-    }
-
-    const interval = setInterval(() => {
-      if (textRef.current.scrollHeight <= maxHeight || size <= 8) {
-        clearInterval(interval)
-      } else {
-        checkFit()
-      }
-    }, 10)
-
-    return () => clearInterval(interval)
-  }, [dialogText, dialogName])
+  // Rumus Auto-Resize Font dinamis agar tulisan mengecil otomatis jika sangat panjang
+  const getTextFontSize = (text) => {
+    if (!text) return 'text-[11px]';
+    const len = text.length;
+    if (len > 150) return 'text-[8.5px] leading-tight';
+    if (len > 90) return 'text-[9.5px] leading-snug';
+    return 'text-[11px] leading-normal';
+  };
 
   return (
-    <div className="w-full max-w-md mx-auto rounded-2xl overflow-hidden bg-black border border-white/10">
-      <div className="relative w-full" style={{ aspectRatio: '16 / 9' }}>
+    <div className="w-full aspect-video bg-slate-950 rounded-2xl overflow-hidden border border-white/10 relative shadow-2xl flex flex-col justify-end">
+      
+      {/* 1. Background Scene Layer */}
+      <div className="absolute inset-0 z-0">
         {backgroundEmbed ? (
-          <img
-            src={backgroundEmbed}
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: 'center' }}
-            alt="background"
+          <img 
+            src={backgroundEmbed} 
+            className="w-full h-full object-cover select-none pointer-events-none" 
+            alt="Scene Background" 
           />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-800 to-slate-900 flex items-center justify-center">
-            <p className="text-slate-600 text-xs">No background set</p>
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-950 text-slate-600 text-xs">
+            No background set
           </div>
         )}
+      </div>
 
+      {/* 2. Character Sprites Layer */}
+      <div className="absolute inset-0 z-10 flex justify-center items-end overflow-hidden pointer-events-none select-none">
         {sprites.map((sprite, idx) => {
           if (!sprite.url) return null
-          const posClass = POSITION_CLASSES[sprite.position] || POSITION_CLASSES.center
+          
+          const leftPos = `${sprite.position}%`
+          const zoomScale = (sprite.sprite_zoom || 100) / 100
+          const yOffset = `${sprite.sprite_y_offset || 0}px`
+
           return (
             <img
               key={idx}
               src={sprite.url}
-              className={`absolute bottom-0 h-[85%] object-contain ${posClass}`}
-              alt={`sprite-${idx}`}
+              alt="Character Sprite"
+              className="absolute max-h-[85%] object-contain transition-all duration-300 ease-out"
+              style={{
+                left: leftPos,
+                transform: `translateX(-50%) scale(${zoomScale}) translateY(${yOffset})`,
+                transformOrigin: 'bottom center',
+                bottom: '0px'
+              }}
             />
           )
         })}
+      </div>
 
+      {/* Kontainer Utama UI (Choices + Dialog) Terkunci Aman Menempel ke Bawah */}
+      <div className="w-full z-20 flex flex-col justify-end pointer-events-none">
+        
+        {/* 3. Box Choices Area (Diciutkan Mungil, Teks 7px, dan Dinaikkan ke atas character name dengan pb-4) */}
+        {choices.length > 0 && (
+          <div className="w-full flex flex-col items-center px-4 pb-8 gap-1 pointer-events-auto">
+            {choices.map((choice) => (
+              <div
+                key={choice.id}
+                className="w-1/3 max-w-[110px] border border-white/15 text-center text-[7px] text-white py-0.5 px-2 rounded-md shadow-md backdrop-blur-sm select-none truncate"
+                style={{
+                  backgroundColor: `rgba(9, 9, 11, ${choiceBoxOpacity})`
+                }}
+              >
+                {choice.choice_text || 'Choice'}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* 4. UI Dialogue Box Layer */}
         {(dialogName || dialogText) && (
-          <div className="absolute bottom-0 left-0 right-0 flex flex-col justify-end" style={{ height: '35%' }}>
-            {dialogName && (
-              <div className="ml-3 flex-shrink-0">
-                <span className="inline-block bg-pink-600 text-white font-bold px-3 py-0.5 rounded-t-md" style={{ fontSize: '10px' }}>
+          <div className="w-full p-2.5 bg-gradient-to-t from-black/95 via-black/70 to-transparent pointer-events-auto relative max-h-[30%] flex flex-col justify-end">
+            <div className="w-full max-w-2xl mx-auto flex flex-col justify-end h-full">
+              
+              {/* Box Nama Karakter */}
+              {dialogName && (
+                <div 
+                  className="inline-block self-start text-[9px] font-black tracking-wider uppercase text-pink-400 border border-pink-500/20 px-2 py-0.5 rounded-md shadow-sm backdrop-blur-sm mb-1"
+                  style={{
+                    backgroundColor: `rgba(15, 23, 42, ${nameBoxOpacity})`
+                  }}
+                >
                   {dialogName}
-                </span>
+                </div>
+              )}
+              
+              {/* Box Teks Cerita Dialog */}
+              <div 
+                className={`w-full border border-white/5 rounded-xl p-2 h-full min-h-[42px] text-slate-200 shadow-lg backdrop-blur-md overflow-hidden flex items-center ${getTextFontSize(dialogText)}`}
+                style={{
+                  backgroundColor: `rgba(15, 23, 42, ${dialogBoxOpacity})`
+                }}
+              >
+                <p className="w-full">{dialogText || '...'}</p>
               </div>
-            )}
 
-            <div
-              ref={boxRef}
-              className="bg-black/80 backdrop-blur-sm p-3 overflow-hidden flex-1"
-              style={{ marginTop: dialogName ? '-1px' : '0' }}
-            >
-              <div ref={textRef}>
-                {dialogText && (
-                  <p className="text-white leading-relaxed" style={{ fontSize: `${fontSize}px` }}>
-                    {dialogText}
-                  </p>
-                )}
-              </div>
             </div>
           </div>
         )}
+
       </div>
+
     </div>
   )
 }
-
 export default GamePreview
