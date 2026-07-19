@@ -11,6 +11,7 @@ import Projects from './pages/Projects'
 import ProjectDashboard from './pages/ProjectDashboard'
 import CharacterSettings from './pages/CharacterSettings'
 import GeneralSettings from './pages/GeneralSettings'
+import StoryEditor from './pages/StoryEditor'
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/project/:projectId" element={<ProjectDashboard />} />
         <Route path="/project/:projectId/characters" element={<CharacterSettings />} />
         <Route path="/project/:projectId/general-settings" element={<GeneralSettings />} />
+        <Route path="/project/:projectId/editor" element={<StoryEditor />} />
       </Routes>
     </BrowserRouter>
   )

@@ -9,41 +9,49 @@ function LivePreview({ title, titleCoverType, titleCoverContent, coverEmbed, dev
 
   return (
     <div
-      className="relative w-full aspect-[9/16] max-h-[420px] rounded-2xl overflow-hidden bg-slate-900 border border-white/10 mx-auto"
+      className="w-full max-w-md mx-auto rounded-2xl overflow-hidden bg-black border border-white/10"
       style={{ fontFamily: font.family }}
     >
-      {coverEmbed ? (
-        <img src={coverEmbed} className="absolute inset-0 w-full h-full object-contain bg-black" alt="cover" />
-      ) : (
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-800 to-slate-900" />
-      )}
+      {/* Game viewport - fixed 16:9 */}
+      <div className="relative w-full" style={{ aspectRatio: '16 / 9' }}>
+        {coverEmbed ? (
+          <img
+            src={coverEmbed}
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ objectPosition: 'center' }}
+            alt="cover"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-800 to-slate-900" />
+        )}
 
-      <div className="absolute inset-0 bg-black/30 flex flex-col justify-between p-4 pointer-events-none">
-        {/* Judul di tengah-atas */}
-        <div className="flex justify-center pt-6">
-          {titleCoverType === 'embed' && titleCoverContent ? (
-            <img src={titleCoverContent} className="max-h-16 object-contain" alt="title" />
-          ) : (
-            <h1 className="text-white text-2xl font-black text-center drop-shadow-lg">
-              {titleCoverContent || title || 'Untitled'}
-            </h1>
-          )}
-        </div>
+        <div className="absolute inset-0 bg-black/30 flex flex-col justify-between p-3 pointer-events-none">
+          {/* Judul di tengah-atas */}
+          <div className="flex justify-center pt-2">
+            {titleCoverType === 'embed' && titleCoverContent ? (
+              <img src={titleCoverContent} className="max-h-10 object-contain" alt="title" />
+            ) : (
+              <h1 className="text-white text-lg font-black text-center drop-shadow-lg">
+                {titleCoverContent || title || 'Untitled'}
+              </h1>
+            )}
+          </div>
 
-        {/* Tombol menu */}
-        <div className="flex flex-col gap-2 items-center pb-2">
-          <button className="w-32 py-2 bg-pink-600/90 rounded-full text-white text-xs font-bold">Start</button>
-          <button className="w-32 py-2 bg-white/10 rounded-full text-white text-xs font-bold">Load</button>
-          <button className="w-32 py-2 bg-white/10 rounded-full text-white text-xs font-bold">About</button>
-        </div>
+          {/* Tombol menu */}
+          <div className="flex gap-2 items-center justify-center pb-1">
+            <button className="px-4 py-1.5 bg-pink-600/90 rounded-full text-white text-[10px] font-bold">Start</button>
+            <button className="px-4 py-1.5 bg-white/10 rounded-full text-white text-[10px] font-bold">Load</button>
+            <button className="px-4 py-1.5 bg-white/10 rounded-full text-white text-[10px] font-bold">About</button>
+          </div>
 
-        {/* Dev name kanan-bawah */}
-        <div className="absolute bottom-2 right-3">
-          {devNameType === 'embed' && devNameEmbed ? (
-            <img src={devNameEmbed} className="max-h-6 object-contain" alt="dev" />
-          ) : (
-            <p className="text-white/70 text-[10px]">{devName || ''}</p>
-          )}
+          {/* Dev name kanan-bawah */}
+          <div className="absolute bottom-1 right-2">
+            {devNameType === 'embed' && devNameEmbed ? (
+              <img src={devNameEmbed} className="max-h-4 object-contain" alt="dev" />
+            ) : (
+              <p className="text-white/70 text-[8px]">{devName || ''}</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -180,6 +188,7 @@ function GeneralSettings() {
         {/* Game Cover */}
         <div>
           <label className="text-slate-400 text-sm mb-1 block">Game Cover (embed link)</label>
+          <p className="text-slate-600 text-xs mb-2">💡 Tip: images with a 16:9 ratio will look best</p>
           <input
             type="text"
             placeholder="https://..."
